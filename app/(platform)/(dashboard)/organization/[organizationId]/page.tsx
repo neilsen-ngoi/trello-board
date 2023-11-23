@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import { create } from '@/actions/create-board'
 import { Button } from '@/components/ui/button'
+import Board from './board'
 
 const OrganizationIdPage = async () => {
   const boards = await db.board.findMany()
@@ -20,7 +21,8 @@ const OrganizationIdPage = async () => {
       </form>
       <div className=" space-y-2">
         {boards.map((board) => (
-          <div key={board.id}>Board title:{board.title}</div>
+          // <div key={board.id}>Board title:{board.title}</div>
+          <Board title={board.title} id={board.id} key={board.id} />
         ))}
       </div>
     </div>
