@@ -1,5 +1,6 @@
 import { z } from 'zod'
-const createBoard = z.object({
+
+export const CreateBoard = z.object({
   title: z
     .string({
       required_error: 'title is required',
