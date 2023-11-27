@@ -9,6 +9,7 @@ import { PopoverTrigger } from '@radix-ui/react-popover'
 import { Button } from '../ui/button'
 import { toast } from 'sonner'
 import { X } from 'lucide-react'
+import { FormPicker } from './form-picker'
 
 interface FormPopoverProps {
   children: React.ReactNode
@@ -60,6 +61,7 @@ export const FormPopover = ({
         </PopoverClose>
         <form action={onSubmit} className=" space-y-4">
           <div className=" space-y-4">
+            <FormPicker id="image" errors={fieldErrors} />
             <FormInput
               errors={fieldErrors}
               id="title"
