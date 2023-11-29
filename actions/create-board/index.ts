@@ -8,27 +8,48 @@ import { createSafeAction } from '@/lib/create-safe-action'
 import { CreateBoard } from './schema'
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-  const { userId,orgId } = auth()
+  const { userId, orgId } = auth()
   if (!userId || !orgId) {
     return {
       error: 'unauthorized',
     }
   }
-  const { title,image } = data
+  const { title, image } = data
 
-  const [
+  const [imageId, imageThumbUrl, imageFullUrl, imageLinkHTML, imageUserName] =
+    image.split('|')
+
+  console.log({
     imageId,
-    imageThumbUrlm,
+    imageThumbUrl,
     imageFullUrl,
-    imgaeLinkHtml,
-    imageUserName
-  ] =image.split("|")
+    imageLinkHTML,
+    imageUserName,
+  })
+
+  if (
+    !imageId ||
+    !imageThumbUrl ||
+    !imageFullUrl ||
+    !imageLinkHTML ||
+    !imageUserName
+  ) {
+    return {
+      error: 'Missing Fields. Failedt to create board',
+    }
+  }
 
   let board
   try {
     board = await db.board.create({
       data: {
         title,
+        orgId,
+        imageId,
+        imageThumbUrl,
+        imageFullUrl,
+        imageLinkHTML,
+        imageUserName,
       },
     })
   } catch (error) {
