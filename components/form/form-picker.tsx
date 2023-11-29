@@ -14,6 +14,7 @@ interface FormPickerProps {
 import React, { useEffect, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import Link from 'next/link'
+import { FormErrors } from './form-errors'
 
 export const FormPicker = ({ id, errors }: FormPickerProps) => {
   const { pending } = useFormStatus()
@@ -70,17 +71,20 @@ export const FormPicker = ({ id, errors }: FormPickerProps) => {
               setSelectedImageId(image.id)
             }}
           >
-            {selectedImageId === image.id && (
-              <div className=" absolute inset-y-0 w-full flex items-center justify-center h-full bg-black/30">
-                <Check className=" h-4 w-4 text-white" />
-              </div>
-            )}
+            {/* triggered when specific image selected */}
+            <input type="radio" name={id} id={id} className=' hidden' checked={selectedImageId === image.id} disabled={pending} 
+            value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|${image.user.name}`} />
             <Image
               fill
               alt="unsplash"
               className=" object-cover rounded-sm"
               src={image.urls.thumb}
-            />
+              />
+              {selectedImageId === image.id && (
+                <div className=" absolute inset-y-0 w-full flex items-center justify-center h-full bg-black/30">
+                  <Check className=" h-4 w-4 text-white" />
+                </div>
+              )}
             <Link
               href={image.links.html}
               target="blank"
@@ -92,6 +96,7 @@ export const FormPicker = ({ id, errors }: FormPickerProps) => {
           </div>
         ))}
       </div>
+      <FormErrors id='iamge'errors={errors}/>
     </div>
   )
 }

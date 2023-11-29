@@ -1,15 +1,16 @@
 'use client'
 
-import { useAction } from '@/hooks/use-action'
-import { createBoard } from '@/actions/create-board'
+import { toast } from 'sonner'
+import { X } from 'lucide-react'
+
 import { FormInput } from './form-input'
 import { FormSubmit } from './form-submit'
 import { Popover, PopoverClose, PopoverContent } from '../ui/popover'
-import { PopoverTrigger } from '@radix-ui/react-popover'
 import { Button } from '../ui/button'
-import { toast } from 'sonner'
-import { X } from 'lucide-react'
 import { FormPicker } from './form-picker'
+import { PopoverTrigger } from '@radix-ui/react-popover'
+import { createBoard } from '@/actions/create-board'
+import { useAction } from '@/hooks/use-action'
 
 interface FormPopoverProps {
   children: React.ReactNode
@@ -37,7 +38,10 @@ export const FormPopover = ({
 
   const onSubmit = (formData: FormData) => {
     const title = formData.get('title') as string
-    execute({ title })
+    const image = formData.get('image') as string
+    // execute({ title })
+    console.log({image});
+    
   }
   return (
     <Popover>

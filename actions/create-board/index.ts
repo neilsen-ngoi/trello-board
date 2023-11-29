@@ -8,13 +8,22 @@ import { createSafeAction } from '@/lib/create-safe-action'
 import { CreateBoard } from './schema'
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-  const { userId } = auth()
-  if (!userId) {
+  const { userId,orgId } = auth()
+  if (!userId || !orgId) {
     return {
       error: 'unauthorized',
     }
   }
-  const { title } = data
+  const { title,image } = data
+
+  const [
+    imageId,
+    imageThumbUrlm,
+    imageFullUrl,
+    imgaeLinkHtml,
+    imageUserName
+  ] =image.split("|")
+
   let board
   try {
     board = await db.board.create({
