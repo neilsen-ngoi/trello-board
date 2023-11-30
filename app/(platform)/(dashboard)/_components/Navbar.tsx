@@ -1,7 +1,9 @@
+import { Plus } from 'lucide-react'
+
 import Logo from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { OrganizationSwitcher, UserButton } from '@clerk/nextjs'
-import { Plus } from 'lucide-react'
+import { FormPopover } from '@/components/form/form-popover'
 import { MobileSidebar } from './MobileSidebar'
 
 const Navbar = () => {
@@ -13,16 +15,21 @@ const Navbar = () => {
         <div className=" hidden md:flex">
           <Logo />
         </div>
-        <Button
-          size="sm"
-          className=" rounded-sm hidden md:block h-auto py-1.5 px-2"
-          variant="primary"
-        >
-          Create
-        </Button>
-        <Button variant="primary" size="sm">
-          <Plus className=" h-4 w-4" />
-        </Button>
+        <FormPopover align="start" side="bottom" sideOffset={18}>
+          <Button
+            size="sm"
+            className=" rounded-sm hidden md:block h-auto py-1.5 px-2"
+            variant="primary"
+          >
+            Create
+          </Button>
+        </FormPopover>
+        {/* mobile version */}
+        <FormPopover>
+          <Button variant="primary" size="sm" className=" md:hidden rounded-sm">
+            <Plus className=" h-4 w-4" />
+          </Button>
+        </FormPopover>
       </div>
       <div className=" ml-auto flex items-center gap-x-2">
         <OrganizationSwitcher
