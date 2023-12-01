@@ -1,11 +1,15 @@
 'use client'
 
+import { updateList } from '@/actions/update-list'
 import { FormInput } from '@/components/form/form-input'
+import { useAction } from '@/hooks/use-action'
 import { List } from '@prisma/client'
 import { useEffect, useState } from 'react'
 import { useRef } from 'react'
 import { ElementRef } from 'react'
+import { toast } from 'sonner'
 import { useEventListener } from 'usehooks-ts'
+import ListOptions from './list-options'
 interface ListHeaderProps {
   data: List
 }
@@ -26,28 +30,55 @@ const ListHeader = ({ data }: ListHeaderProps) => {
   const disableEditing = () => {
     setIsEditing(false)
   }
+  const { execute } = useAction(updateList, {
+    onSuccess: (data) => {
+      toast.success(`Renamed to"${data.title}"`)
+      setTitle(data.title)
+      disableEditing()
+    },
+    onError: (error) => {
+      toast.error(error)
+    },
+  })
+
+  const handleSubmit = (formdata: FormData) => {
+    const title = formdata.get('title') as string
+    const id = formdata.get('id') as string
+    const boardId = formdata.get('boardId') as string
+
+    if (title === data.title) {
+      return disableEditing()
+    }
+    execute({ title, id, boardId })
+  }
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       formRef.current?.requestSubmit()
     }
   }
+
+  const onBlur = () => {
+    formRef.current?.requestSubmit()
+  }
+
   useEventListener('keydown', onKeyDown)
 
   return (
     <div className=" pt-2 px-2 text-sm font-semibold flex justify-between gap-x-2 items-start">
       {isEditing ? (
-        <form className=" flex-1 px-[2px]">
+        <form ref={formRef} action={handleSubmit} className=" flex-1 px-[2px]">
           <input hidden id="id" name="id" value={data.id} />
           <input hidden id="boardId" name="boardId" value={data.boardId} />
           <FormInput
             ref={inputRef}
-            onBlur={onblur}
+            onBlur={onBlur}
             id="title"
             placeholder="Enter List title"
             defaultValue={title}
             className=" text-sm px-[7px] py-1 h7 font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white"
           />
+          <button type="submit" hidden />
         </form>
       ) : (
         <div
@@ -57,6 +88,7 @@ const ListHeader = ({ data }: ListHeaderProps) => {
           {title}
         </div>
       )}
+      <ListOptions data={data} onAddCard={() => {}} />
     </div>
   )
 }
