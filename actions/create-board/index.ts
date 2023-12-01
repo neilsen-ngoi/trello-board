@@ -18,7 +18,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
   const [
     imageId,
-    imageThumbUrlm,
+    imageThumbUrl,
     imageFullUrl,
     imgaeLinkHtml,
     imageUserName
