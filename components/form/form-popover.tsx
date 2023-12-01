@@ -11,6 +11,8 @@ import { FormPicker } from './form-picker'
 import { PopoverTrigger } from '@radix-ui/react-popover'
 import { createBoard } from '@/actions/create-board'
 import { useAction } from '@/hooks/use-action'
+import { ElementRef, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface FormPopoverProps {
   children: React.ReactNode
@@ -25,13 +27,15 @@ export const FormPopover = ({
   sideOffset = 0,
   align,
 }: FormPopoverProps) => {
+  const closeRef = useRef<ElementRef<'button'>>(null)
+  const router = useRouter()
   const { execute, fieldErrors } = useAction(createBoard, {
     onSuccess: (data) => {
-      console.log({ data })
       toast.success('board created!')
+      closeRef.current?.click()
+      router.push(`/board/${data.id}`)
     },
     onError: (error) => {
-      console.log({ error })
       toast.error(error)
     },
   })
@@ -39,9 +43,7 @@ export const FormPopover = ({
   const onSubmit = (formData: FormData) => {
     const title = formData.get('title') as string
     const image = formData.get('image') as string
-    // execute({ title })
-    console.log({image});
-    
+    execute({ title, image })
   }
   return (
     <Popover>
@@ -55,7 +57,7 @@ export const FormPopover = ({
         <div className=" text-sm font-medium text-center to-neutral-600 pb-4">
           Create board
         </div>
-        <PopoverClose asChild>
+        <PopoverClose asChild ref={closeRef}>
           <Button
             variant="ghost"
             className=" h-auto w-auto absolute top-2 right-2 to-neutral-600"
