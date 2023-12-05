@@ -1,15 +1,16 @@
 'use client'
 
-import { ElementRef, forwardRef, KeyboardEvent, KeyboardEventHandler, useRef } from 'react'
+import { toast } from 'sonner'
 import { Plus, X } from 'lucide-react'
-
-import { FormSubmit } from '@/components/form/form-submit'
-import { FormTextarea } from '@/components/form/form-textarea'
-import { Button } from '@/components/ui/button'
+import { forwardRef, useRef, ElementRef, KeyboardEventHandler } from 'react'
 import { useParams } from 'next/navigation'
+import { useOnClickOutside, useEventListener } from 'usehooks-ts'
+
 import { useAction } from '@/hooks/use-action'
 import { createCard } from '@/actions/create-card'
-import { useEventListener, useOnClickOutside } from 'usehooks-ts'
+import { Button } from '@/components/ui/button'
+import { FormSubmit } from '@/components/form/form-submit'
+import { FormTextarea } from '@/components/form/form-textarea'
 
 interface CardFormProps {
   listId: string
@@ -17,36 +18,69 @@ interface CardFormProps {
   disableEditing: () => void
   isEditing: boolean
 }
-const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
-  ({ listId, disableEditing, enableEditing, isEditing }, ref) => {
+
+export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
+  ({ listId, enableEditing, disableEditing, isEditing }, ref) => {
+    //actions
     const params = useParams()
     const formRef = useRef<ElementRef<'form'>>(null)
-    const { execute, fieldErrors } = useAction(createCard)
-    
-    const onKeyDown = (e:KeyboardEvent) => {
-      if(e.key === "Escape") {
+
+    const { execute, fieldErrors } = useAction(createCard, {
+      onSuccess: (data) => {
+        toast.success(`Card "${data.title}" created`)
+        //clears form after successful card creation
+        formRef.current?.reset()
+      },
+      onError: (error) => {
+        toast.error(error)
+      },
+    })
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
         disableEditing()
       }
     }
 
     useOnClickOutside(formRef, disableEditing)
-    useEventListener("keydown", onKeyDown)
-    const onTextareakeyDown: KeyboardEventHandler<HTMLAreaElement> = (e) => {
-      if(e.key)
+    useEventListener('keydown', onKeyDown)
+
+    const onTextareakeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (
+      e
+    ) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault()
+        formRef.current?.requestSubmit()
+      }
     }
+
+    const onSubmit = (formData: FormData) => {
+      const title = formData.get('title') as string
+      const listId = formData.get('listId') as string
+      const boardId = params.boardId as string
+
+      execute({ title, listId, boardId })
+    }
+
+    //actions
 
     if (isEditing) {
       return (
-        <form className=" m-1 py-0.5 space-y-4">
+        <form
+          ref={formRef}
+          action={onSubmit}
+          className="m-1 py-0.5 px-1 space-y-4"
+        >
           <FormTextarea
             id="title"
-            onKeyDown={() => {}}
+            onKeyDown={onTextareakeyDown}
             ref={ref}
-            placeholder="Enter a title for this card"
+            placeholder="Enter a title for this card..."
+            errors={fieldErrors}
           />
           <input hidden id="listId" name="listId" value={listId} />
-          <div className=" flex items-center gap-x-1">
-            <FormSubmit>Add Card</FormSubmit>
+          <div className="flex items-center gap-x-1">
+            <FormSubmit>Add card</FormSubmit>
             <Button onClick={disableEditing} size="sm" variant="ghost">
               <X className="h-5 w-5" />
             </Button>
@@ -56,15 +90,15 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
     }
 
     return (
-      <div className=" pt-2 px-2">
+      <div className="pt-2 px-2">
         <Button
           onClick={enableEditing}
+          className="h-auto px-2 py-1.5 w-full justify-start text-muted-foreground text-sm"
           size="sm"
           variant="ghost"
-          className=" text-sm h-auto px-2 py-1.5 w-full justify-start text-muted-foreground"
         >
-          <Plus className=" h-4 w-4 mr-2" />
-          Add a Card
+          <Plus className="h-4 w-4 mr-2" />
+          Add a card
         </Button>
       </div>
     )
@@ -72,4 +106,3 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
 )
 
 CardForm.displayName = 'CardForm'
-export default CardForm
