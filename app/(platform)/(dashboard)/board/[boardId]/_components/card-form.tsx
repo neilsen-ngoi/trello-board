@@ -1,10 +1,15 @@
 'use client'
 
+import { ElementRef, forwardRef, KeyboardEvent, KeyboardEventHandler, useRef } from 'react'
+import { Plus, X } from 'lucide-react'
+
 import { FormSubmit } from '@/components/form/form-submit'
 import { FormTextarea } from '@/components/form/form-textarea'
 import { Button } from '@/components/ui/button'
-import { Plus, X } from 'lucide-react'
-import { forwardRef } from 'react'
+import { useParams } from 'next/navigation'
+import { useAction } from '@/hooks/use-action'
+import { createCard } from '@/actions/create-card'
+import { useEventListener, useOnClickOutside } from 'usehooks-ts'
 
 interface CardFormProps {
   listId: string
@@ -14,6 +19,22 @@ interface CardFormProps {
 }
 const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
   ({ listId, disableEditing, enableEditing, isEditing }, ref) => {
+    const params = useParams()
+    const formRef = useRef<ElementRef<'form'>>(null)
+    const { execute, fieldErrors } = useAction(createCard)
+    
+    const onKeyDown = (e:KeyboardEvent) => {
+      if(e.key === "Escape") {
+        disableEditing()
+      }
+    }
+
+    useOnClickOutside(formRef, disableEditing)
+    useEventListener("keydown", onKeyDown)
+    const onTextareakeyDown: KeyboardEventHandler<HTMLAreaElement> = (e) => {
+      if(e.key)
+    }
+
     if (isEditing) {
       return (
         <form className=" m-1 py-0.5 space-y-4">

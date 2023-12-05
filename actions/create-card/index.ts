@@ -47,7 +47,13 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       },
     })
 
-    //
+    card = await db.card.create({
+      data: {
+        title,
+        listId,
+        order: newOrder,
+      },
+    })
   } catch (error) {
     return { error: 'Failed to create.' }
   }
