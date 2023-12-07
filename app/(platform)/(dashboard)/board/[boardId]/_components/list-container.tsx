@@ -6,6 +6,8 @@ import { DragDropContext, Droppable } from '@hello-pangea/dnd'
 import ListItem from './list-item'
 import { useAction } from '@/hooks/use-action'
 import { updateListOrder } from '@/actions/update-list-order'
+import { updateCardOrder } from '@/actions/update-card-order'
+
 import { toast } from 'sonner'
 interface ListContainerProps {
   data: ListWithCards[]
@@ -21,9 +23,19 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number) {
 }
 
 const ListContainer = ({ data, boardId }: ListContainerProps) => {
+  //server actions
   const { execute: executeUpdateListOrder } = useAction(updateListOrder, {
     onSuccess: () => {
       toast.success('List reordered')
+    },
+    onError: (error) => {
+      toast.error(error)
+    },
+  })
+
+  const { execute: executeUpdateCardOrder } = useAction(updateCardOrder, {
+    onSuccess: () => {
+      toast.success('cards reordered')
     },
     onError: (error) => {
       toast.error(error)
@@ -97,7 +109,7 @@ const ListContainer = ({ data, boardId }: ListContainerProps) => {
 
         sourceList.cards = reorderedCards
         setOrderedData(newOrderedData)
-        //trigger server action
+        executeUpdateCardOrder({ boardId, items: reorderedCards })
         // user moves card to another list
       } else {
         //remove card from source list
@@ -115,7 +127,7 @@ const ListContainer = ({ data, boardId }: ListContainerProps) => {
           card.order = idx
         })
         setOrderedData(newOrderedData)
-        //todo trigger server action
+        executeUpdateCardOrder({ boardId, items: destList.cards })
       }
     }
   }
