@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 
 export type FieldErrors<T> = {
   [K in keyof T]?: string[]
@@ -22,6 +22,7 @@ export const createSafeAction = <TInput, TOutput>(
           .fieldErrors as FieldErrors<TInput>,
       }
     }
+
     return handler(validationResult.data)
   }
 }
