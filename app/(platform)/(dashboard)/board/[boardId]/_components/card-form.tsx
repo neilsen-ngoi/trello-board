@@ -19,7 +19,7 @@ interface CardFormProps {
   isEditing: boolean
 }
 
-export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
   ({ listId, enableEditing, disableEditing, isEditing }, ref) => {
     //actions
     const params = useParams()
@@ -78,7 +78,7 @@ export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
             placeholder="Enter a title for this card..."
             errors={fieldErrors}
           />
-          <input hidden id="listId" name="listId" value={listId} />
+          <input hidden id="listId" name="listId" value={listId} readOnly />
           <div className="flex items-center gap-x-1">
             <FormSubmit>Add card</FormSubmit>
             <Button onClick={disableEditing} size="sm" variant="ghost">
@@ -106,3 +106,4 @@ export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(
 )
 
 CardForm.displayName = 'CardForm'
+export default CardForm
