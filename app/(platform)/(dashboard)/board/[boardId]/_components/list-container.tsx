@@ -22,7 +22,7 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number) {
   return result
 }
 
-const ListContainer = ({ data, boardId }: ListContainerProps) => {
+export const ListContainer = ({ data, boardId }: ListContainerProps) => {
   //server actions
   const { execute: executeUpdateListOrder } = useAction(updateListOrder, {
     onSuccess: () => {
@@ -155,5 +155,3 @@ const ListContainer = ({ data, boardId }: ListContainerProps) => {
     </DragDropContext>
   )
 }
-
-export default ListContainer
