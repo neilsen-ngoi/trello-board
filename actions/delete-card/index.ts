@@ -1,5 +1,6 @@
 'use server'
-
+import { ENTITY_TYPE, ACTION } from '@prisma/client'
+import { createAuditLog } from '@/lib/create-audit-logs'
 import { createSafeAction } from '@/lib/create-safe-action'
 import { db } from '@/lib/db'
 import { auth } from '@clerk/nextjs'
@@ -28,6 +29,13 @@ const handler = async (data: InputType): Promise<ReturnType> => {
           },
         },
       },
+    })
+
+    await createAuditLog({
+      entityTitle: card.title,
+      entityId: card.id,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.DELETE,
     })
   } catch (error) {
     return {
