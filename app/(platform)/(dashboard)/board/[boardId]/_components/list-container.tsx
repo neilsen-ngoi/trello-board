@@ -43,6 +43,7 @@ const ListContainer = ({ data, boardId }: ListContainerProps) => {
   })
 
   const [orderedData, setOrderedData] = useState(data)
+  console.log('ORDERED_DATA', orderedData)
   // source of truth to modify in the front before sending to the db
 
   useEffect(() => {
@@ -69,6 +70,7 @@ const ListContainer = ({ data, boardId }: ListContainerProps) => {
         (item, index) => ({ ...item, order: index })
       )
       setOrderedData(items)
+      console.log('REORDERED_DATAAAAA', items)
       executeUpdateListOrder({ items, boardId })
     }
 

@@ -38,6 +38,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       error: 'failed to reorder',
     }
   }
+  console.log('AFTER: ', lists)
   revalidatePath(`/board/${boardId}`)
   return { data: lists }
 }
