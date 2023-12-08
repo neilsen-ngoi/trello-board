@@ -4,7 +4,7 @@ import { createSafeAction } from '@/lib/create-safe-action'
 import { db } from '@/lib/db'
 import { auth } from '@clerk/nextjs'
 import { revalidatePath } from 'next/cache'
-import { CopyCard } from './schema'
+import { DeleteCard } from './schema'
 import { InputType, ReturnType } from './types'
 
 const handler = async (data: InputType): Promise<ReturnType> => {
@@ -19,7 +19,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   let card
 
   try {
-    const cardToCopy = await db.card.findUnique({
+    card = await db.card.delete({
       where: {
         id,
         list: {
@@ -29,34 +29,12 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         },
       },
     })
-    if (!cardToCopy) {
-      return { error: 'Card not found' }
-    }
-
-    const lastCard = await db.card.findFirst({
-      where: {
-        listId: cardToCopy.listId,
-      },
-      orderBy: { order: 'desc' },
-      select: { order: true },
-    })
-    //@ts-ignore
-    const newOrder = lastCard ? lastCard.order + 1 : 1
-
-    card = await db.card.create({
-      data: {
-        title: `${cardToCopy.title} - Copy`,
-        description: cardToCopy.description,
-        order: newOrder,
-        listId: cardToCopy.listId,
-      },
-    })
   } catch (error) {
     return {
-      error: 'failed to copy',
+      error: 'failed to delete',
     }
   }
   revalidatePath(`/board/${boardId}`)
   return { data: card }
 }
-export const copyCard = createSafeAction(CopyCard, handler)
+export const deleteCard = createSafeAction(DeleteCard, handler)
