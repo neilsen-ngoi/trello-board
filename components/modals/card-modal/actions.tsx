@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CardWithList } from '@/types'
-import { Copy } from 'lucide-react'
+import { Copy, Trash } from 'lucide-react'
 
 interface ActionsProps {
   data: CardWithList
@@ -16,6 +16,10 @@ export const Actions = ({ data }: ActionsProps) => {
       <Button variant="gray" className=" w-full justify-start" size="inline">
         <Copy className=" h-4 w-4 mr-2" />
         Copy
+      </Button>
+      <Button variant="gray" className=" w-full justify-start" size="inline">
+        <Trash className=" h-4 w-4 mr-2" />
+        Delete
       </Button>
     </div>
   )
