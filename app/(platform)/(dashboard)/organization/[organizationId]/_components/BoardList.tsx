@@ -1,4 +1,4 @@
-import { HelpCircle, Key, User2 } from 'lucide-react'
+import { HelpCircle, User2 } from 'lucide-react'
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { Hint } from '@/components/Hints'
@@ -6,6 +6,8 @@ import { FormPopover } from '@/components/form/form-popover'
 import { auth } from '@clerk/nextjs'
 import { db } from '@/lib/db'
 import Link from 'next/link'
+import { MAX_FREE_BOARDS } from '@/constants/boards'
+import { getAvailableCount } from '@/lib/org-limits'
 
 export const BoardList = async () => {
   const { orgId } = auth()
@@ -21,6 +23,9 @@ export const BoardList = async () => {
       createdAt: 'desc',
     },
   })
+
+  const availableCount = await getAvailableCount()
+
   return (
     <div className=" space-y-4">
       <div className=" flex items-center font-semibold text-lg to-neutral-700">
@@ -46,7 +51,9 @@ export const BoardList = async () => {
           flex flex-col gap-y-1 items-center justify-center hover:opacity-75 transition"
           >
             <p className=" text-sm">Create new board</p>
-            <span className=" text-xs">5 remaining</span>
+            <span className=" text-xs">{`${
+              MAX_FREE_BOARDS - availableCount
+            } remaining`}</span>
             <Hint
               sideOffset={40}
               description="Free users get up to 5 open boards, For unlimited boards upgrade this board to premium"
