@@ -10,7 +10,7 @@ import { db } from '@/lib/db'
 import { ENTITY_TYPE, ACTION } from '@prisma/client'
 import { createSafeAction } from '@/lib/create-safe-action'
 import { createAuditLog } from '@/lib/create-audit-logs'
-import { decreaseAvailableCount } from '@/lib/org-limits'
+import { decreaseAvailableCount } from '@/lib/org-limit'
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId, orgId } = auth()
