@@ -16,10 +16,11 @@ export const createAuditLog = async (props: Props) => {
     const user = await currentUser()
 
     if (!user || !orgId) {
-      throw new Error('user not found')
+      throw new Error('User not found!')
     }
 
     const { entityId, entityType, entityTitle, action } = props
+
     await db.auditLog.create({
       data: {
         orgId,
@@ -32,6 +33,7 @@ export const createAuditLog = async (props: Props) => {
         userName: user?.firstName + ' ' + user?.lastName,
       },
     })
-    //
-  } catch (error) {}
+  } catch (error) {
+    console.log('[AUDIT_LOG_ERROR]', error)
+  }
 }

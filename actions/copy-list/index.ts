@@ -1,6 +1,6 @@
 'use server'
 import { ACTION, ENTITY_TYPE } from '@prisma/client'
-import { createAuditLog } from '@/lib/create-audit-logs'
+import { createAuditLog } from '@/lib/create-audit-log'
 import { createSafeAction } from '@/lib/create-safe-action'
 import { db } from '@/lib/db'
 import { auth } from '@clerk/nextjs'

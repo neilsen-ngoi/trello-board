@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 import { createSafeAction } from '@/lib/create-safe-action'
 import { db } from '@/lib/db'
-import { createAuditLog } from '@/lib/create-audit-logs'
+import { createAuditLog } from '@/lib/create-audit-log'
 import { ENTITY_TYPE, ACTION } from '@prisma/client'
 
 import { InputType, ReturnType } from './types'

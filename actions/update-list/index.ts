@@ -1,5 +1,5 @@
 'use server'
-import { createAuditLog } from '@/lib/create-audit-logs'
+import { createAuditLog } from '@/lib/create-audit-log'
 import { ENTITY_TYPE, ACTION } from '@prisma/client'
 import { auth } from '@clerk/nextjs'
 import { InputType, ReturnType } from './types'
