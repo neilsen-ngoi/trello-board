@@ -1,12 +1,16 @@
 'use server'
-import { ACTION, ENTITY_TYPE } from '@prisma/client'
-import { auth } from '@clerk/nextjs'
-import { InputType, ReturnType } from './types'
-import { db } from '@/lib/db'
+
 import { revalidatePath } from 'next/cache'
-import { createSafeAction } from '@/lib/create-safe-action'
+
 import { CreateBoard } from './schema'
+import { InputType, ReturnType } from './types'
+
+import { auth } from '@clerk/nextjs'
+import { db } from '@/lib/db'
+import { ACTION, ENTITY_TYPE } from '@prisma/client'
+import { createSafeAction } from '@/lib/create-safe-action'
 import { createAuditLog } from '@/lib/create-audit-logs'
+import { incrementAvailableCount, hasAvailableCount } from '@/lib/org-limits'
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId, orgId } = auth()
@@ -15,6 +19,15 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       error: 'unauthorized',
     }
   }
+  const canCreate = await hasAvailableCount()
+
+  if (!canCreate) {
+    return {
+      error:
+        'You have reached your limit of free boards, please upgrade to create more',
+    }
+  }
+
   const { title, image } = data
 
   const [imageId, imageThumbUrl, imageFullUrl, imageLinkHTML, imageUserName] =
@@ -53,6 +66,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         imageUserName,
       },
     })
+
+    await incrementAvailableCount()
 
     await createAuditLog({
       entityTitle: board.title,

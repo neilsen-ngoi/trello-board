@@ -1,11 +1,12 @@
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { HelpCircle, User2 } from 'lucide-react'
 
-import { Skeleton } from '@/components/ui/skeleton'
-import { Hint } from '@/components/Hints'
-import { FormPopover } from '@/components/form/form-popover'
 import { auth } from '@clerk/nextjs'
 import { db } from '@/lib/db'
-import Link from 'next/link'
+import { Skeleton } from '@/components/ui/skeleton'
+import { FormPopover } from '@/components/form/form-popover'
+import { Hint } from '@/components/Hints'
 import { MAX_FREE_BOARDS } from '@/constants/boards'
 import { getAvailableCount } from '@/lib/org-limits'
 
@@ -51,9 +52,9 @@ export const BoardList = async () => {
           flex flex-col gap-y-1 items-center justify-center hover:opacity-75 transition"
           >
             <p className=" text-sm">Create new board</p>
-            <span className=" text-xs">{`${
-              MAX_FREE_BOARDS - availableCount
-            } remaining`}</span>
+            <span className=" text-xs">
+              {`${MAX_FREE_BOARDS - availableCount} remaining`}
+            </span>
             <Hint
               sideOffset={40}
               description="Free users get up to 5 open boards, For unlimited boards upgrade this board to premium"
