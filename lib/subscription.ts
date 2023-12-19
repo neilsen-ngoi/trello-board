@@ -1,6 +1,6 @@
 import { auth } from '@clerk/nextjs'
 
-import { db } from '@/lib/db'
+import { db } from './db'
 
 const DAY_IN_MS = 86_400_000
 
@@ -31,5 +31,5 @@ export const checkSubscription = async () => {
     orgSubscription.stripePriceId &&
     orgSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now()
 
-  return isValid
+  return !!isValid
 }
